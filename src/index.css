@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #ef5343;
+  --color-bg: #0a0a0c;
+  --color-surface: #13141a;
+  --color-surface-hover: #1a1b23;
+  --color-border: #2d2e36;
+}
+
+body {
+  @apply bg-neutral-925 text-gray-100 antialiased;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-600;
+}
+
+/* Input styles */
+input, textarea, select {
+  @apply bg-neutral-850 border border-neutral-700 rounded-lg px-4 py-2.5 text-white 
+         placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 
+         focus:border-transparent transition-all;
+}
+
+/* Button base */
+.btn {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg 
+         font-medium transition-all duration-200 focus:outline-none focus:ring-2 
+         focus:ring-offset-2 focus:ring-offset-neutral-925 disabled:opacity-50 
+         disabled:cursor-not-allowed;
+}
+
+.btn-primary {
+  @apply btn bg-primary-600 text-white hover:bg-primary-500 focus:ring-primary-500;
+}
+
+.btn-secondary {
+  @apply btn bg-neutral-800 text-white hover:bg-neutral-700 focus:ring-neutral-500;
+}
+
+.btn-ghost {
+  @apply btn text-neutral-400 hover:text-white hover:bg-neutral-800;
+}
+
+/* Card */
+.card {
+  @apply bg-neutral-850 border border-neutral-800 rounded-xl p-6;
+}
+
+/* Table */
+.table-container {
+  @apply bg-neutral-850 border border-neutral-800 rounded-xl overflow-hidden;
+}
+
+table {
+  @apply w-full;
+}
+
+th {
+  @apply text-left text-xs font-semibold text-neutral-400 uppercase tracking-wider 
+         px-6 py-3 bg-neutral-900/50 border-b border-neutral-800;
+}
+
+td {
+  @apply px-6 py-4 text-sm text-neutral-200 border-b border-neutral-800/50;
+}
+
+tr:hover td {
+  @apply bg-neutral-800/30;
+}
+
+/* Status badges */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+  @apply badge bg-green-500/20 text-green-400;
+}
+
+.badge-warning {
+  @apply badge bg-yellow-500/20 text-yellow-400;
+}
+
+.badge-error {
+  @apply badge bg-red-500/20 text-red-400;
+}
+
+.badge-info {
+  @apply badge bg-blue-500/20 text-blue-400;
+}
+
+.badge-neutral {
+  @apply badge bg-neutral-500/20 text-neutral-400;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 83, 67, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 83, 67, 0); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
