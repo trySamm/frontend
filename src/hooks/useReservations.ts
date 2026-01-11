@@ -37,8 +37,8 @@ export function useReservations(
   params?: ReservationsQueryParams,
   options?: Omit<UseQueryOptions<Reservation[]>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: reservationsKeys.list(tenantId!, params),
@@ -58,8 +58,8 @@ export function useReservation(
   reservationId: string,
   options?: Omit<UseQueryOptions<Reservation>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: reservationsKeys.detail(tenantId!, reservationId),
@@ -78,8 +78,8 @@ export function useReservation(
  */
 export function useUpdateReservation() {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation<
     Reservation,

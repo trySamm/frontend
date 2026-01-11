@@ -15,8 +15,8 @@ import toast from 'react-hot-toast'
 
 export default function Orders() {
   const { t } = useTranslation()
-  const { user } = useAuthStore()
-  const tenantId = user?.tenantId || ''
+  const { getEffectiveTenantId } = useAuthStore()
+  const tenantId = getEffectiveTenantId() || ''
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('')

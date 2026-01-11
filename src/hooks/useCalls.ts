@@ -22,8 +22,8 @@ export function useCalls(
   params?: CallsQueryParams,
   options?: Omit<UseQueryOptions<PaginatedResponse<Call>>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: callsKeys.list(tenantId!, params),
@@ -43,8 +43,8 @@ export function useCall(
   callId: string,
   options?: Omit<UseQueryOptions<Call>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: callsKeys.detail(tenantId!, callId),
@@ -63,8 +63,8 @@ export function useCall(
 export function useCallStats(
   options?: Omit<UseQueryOptions<CallStats>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: callsKeys.stats(tenantId!),

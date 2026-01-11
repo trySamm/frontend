@@ -38,8 +38,8 @@ export function useMenuItems(
   params?: MenuQueryParams,
   options?: Omit<UseQueryOptions<MenuItem[]>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: menuKeys.list(tenantId!, params),
@@ -58,8 +58,8 @@ export function useMenuItems(
  */
 export function useCreateMenuItem() {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation<MenuItem, Error, MenuItemCreate, MenuItemMutationContext>({
     mutationFn: async (data: MenuItemCreate) => {
@@ -126,8 +126,8 @@ export function useCreateMenuItem() {
  */
 export function useUpdateMenuItem() {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation<
     MenuItem,
@@ -193,8 +193,8 @@ export function useUpdateMenuItem() {
  */
 export function useDeleteMenuItem() {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation<void, Error, string, MenuItemMutationContext>({
     mutationFn: async (itemId: string) => {
@@ -242,8 +242,8 @@ export function useDeleteMenuItem() {
  */
 export function useImportMenuCSV() {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation<MenuImportResult, Error, File>({
     mutationFn: async (file: File) => {

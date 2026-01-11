@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/auth'
 import { useLanguageStore } from '../stores/language'
 import { cn } from '../lib/utils'
 import LanguageSwitcher from '../components/LanguageSwitcher'
+import TenantSelector from '../components/TenantSelector'
 import {
   Phone,
   LayoutDashboard,
@@ -57,6 +58,13 @@ export default function DashboardLayout() {
             <span className="text-lg font-display font-semibold text-white">Samm AI</span>
           </div>
         </div>
+
+        {/* Tenant Selector for Super Admin */}
+        {user?.role === 'super_admin' && (
+          <div className="px-4 pt-4">
+            <TenantSelector />
+          </div>
+        )}
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">

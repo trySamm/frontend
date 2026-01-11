@@ -16,8 +16,8 @@ import {
 
 export default function Calls() {
   const { t } = useTranslation()
-  const { user } = useAuthStore()
-  const tenantId = user?.tenantId || ''
+  const { getEffectiveTenantId } = useAuthStore()
+  const tenantId = getEffectiveTenantId() || ''
   const [page, setPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('')

@@ -41,8 +41,8 @@ export function useOrders(
     'queryKey' | 'queryFn'
   >
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: ordersKeys.list(tenantId!, params),
@@ -62,8 +62,8 @@ export function useOrder(
   orderId: string,
   options?: Omit<UseQueryOptions<Order>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: ordersKeys.detail(tenantId!, orderId),
@@ -82,8 +82,8 @@ export function useOrder(
  */
 export function useUpdateOrderStatus() {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation<
     Order,

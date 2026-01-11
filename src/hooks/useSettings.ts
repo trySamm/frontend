@@ -29,8 +29,8 @@ export const settingsKeys = {
 export function useTenantSettings(
   options?: Omit<UseQueryOptions<TenantSettings>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: settingsKeys.tenantSettings(tenantId!),
@@ -53,8 +53,8 @@ export function useUpdateTenantSettings(
   >
 ) {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation({
     mutationFn: async (update: TenantSettingsUpdate) => {
@@ -75,8 +75,8 @@ export function useUpdateTenantSettings(
 export function useLLMConfig(
   options?: Omit<UseQueryOptions<LLMConfig>, 'queryKey' | 'queryFn'>
 ) {
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useQuery({
     queryKey: settingsKeys.llmConfig(tenantId!),
@@ -99,8 +99,8 @@ export function useUpdateLLMConfig(
   >
 ) {
   const queryClient = useQueryClient()
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   return useMutation({
     mutationFn: async (update: LLMConfigUpdate) => {

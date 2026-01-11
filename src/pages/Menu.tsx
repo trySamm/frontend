@@ -29,8 +29,8 @@ interface MenuItem {
 export default function Menu() {
   const { t } = useTranslation()
   const { direction } = useLanguageStore()
-  const { user } = useAuthStore()
-  const tenantId = user?.tenantId || ''
+  const { getEffectiveTenantId } = useAuthStore()
+  const tenantId = getEffectiveTenantId() || ''
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [searchQuery, setSearchQuery] = useState('')
