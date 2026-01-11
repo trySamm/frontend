@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/auth'
 import { ordersApi } from '../lib/api'
 import { formatCurrency, formatDateTime, formatPhoneNumber, getStatusColor } from '../lib/utils'
 import {
   ShoppingBag,
-  Search,
   ChevronLeft,
   ChevronRight,
   Check,
@@ -14,44 +14,45 @@ import {
 import toast from 'react-hot-toast'
 
 export default function Orders() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const tenantId = user?.tenantId || ''
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('')
-  
+
   const { data, isLoading } = useQuery({
     queryKey: ['orders', tenantId, page, statusFilter],
-    queryFn: () => ordersApi.list(tenantId, { 
-      page, 
+    queryFn: () => ordersApi.list(tenantId, {
+      page,
       page_size: 20,
       status: statusFilter || undefined,
     }),
     enabled: !!tenantId,
   })
-  
+
   const updateStatus = useMutation({
     mutationFn: ({ orderId, status }: { orderId: string; status: string }) =>
       ordersApi.update(tenantId, orderId, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders', tenantId] })
-      toast.success('Order status updated')
+      toast.success(t('orders.statusUpdated'))
     },
     onError: () => {
-      toast.error('Failed to update order')
+      toast.error(t('orders.updateFailed'))
     },
   })
-  
+
   return (
     <div className="p-8 space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-display font-bold text-white">Orders</h1>
-          <p className="text-neutral-400 mt-1">Manage takeout orders</p>
+          <h1 className="text-2xl font-display font-bold text-white">{t('nav.orders')}</h1>
+          <p className="text-neutral-400 mt-1">{t('orders.subtitle')}</p>
         </div>
       </div>
-      
+
       {/* Filters */}
       <div className="flex items-center gap-4">
         <select
@@ -59,41 +60,41 @@ export default function Orders() {
           onChange={(e) => setStatusFilter(e.target.value)}
           className="bg-neutral-850 border border-neutral-700 rounded-lg px-4 py-2.5"
         >
-          <option value="">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="preparing">Preparing</option>
-          <option value="ready">Ready</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="">{t('common.allStatus')}</option>
+          <option value="pending">{t('orders.pending')}</option>
+          <option value="confirmed">{t('orders.confirmed')}</option>
+          <option value="preparing">{t('orders.preparing')}</option>
+          <option value="ready">{t('orders.ready')}</option>
+          <option value="completed">{t('common.completed')}</option>
+          <option value="cancelled">{t('orders.cancelled')}</option>
         </select>
       </div>
-      
+
       {/* Table */}
       <div className="table-container">
         <table>
           <thead>
             <tr>
-              <th>Order</th>
-              <th>Customer</th>
-              <th>Items</th>
-              <th>Total</th>
-              <th>Pickup</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>{t('orders.order')}</th>
+              <th>{t('orders.customer')}</th>
+              <th>{t('orders.items')}</th>
+              <th>{t('orders.total')}</th>
+              <th>{t('orders.pickup')}</th>
+              <th>{t('common.status')}</th>
+              <th>{t('common.actions')}</th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
                 <td colSpan={7} className="text-center py-8 text-neutral-500">
-                  Loading...
+                  {t('common.loading')}
                 </td>
               </tr>
             ) : data?.items?.length === 0 ? (
               <tr>
                 <td colSpan={7} className="text-center py-8 text-neutral-500">
-                  No orders found
+                  {t('orders.noOrders')}
                 </td>
               </tr>
             ) : (
@@ -122,7 +123,7 @@ export default function Orders() {
                   </td>
                   <td>
                     <p className="text-neutral-300">
-                      {order.items?.length || 0} items
+                      {order.items?.length || 0} {t('orders.items')}
                     </p>
                   </td>
                   <td>
@@ -134,7 +135,7 @@ export default function Orders() {
                     {order.pickup_time ? (
                       formatDateTime(order.pickup_time)
                     ) : (
-                      <span className="text-neutral-500">ASAP</span>
+                      <span className="text-neutral-500">{t('orders.asap')}</span>
                     )}
                   </td>
                   <td>
@@ -147,22 +148,22 @@ export default function Orders() {
                       {order.status === 'pending' && (
                         <>
                           <button
-                            onClick={() => updateStatus.mutate({ 
-                              orderId: order.id, 
-                              status: 'confirmed' 
+                            onClick={() => updateStatus.mutate({
+                              orderId: order.id,
+                              status: 'confirmed'
                             })}
                             className="p-2 text-green-400 hover:bg-green-500/20 rounded-lg transition-colors"
-                            title="Confirm"
+                            title={t('orders.confirm')}
                           >
                             <Check className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => updateStatus.mutate({ 
-                              orderId: order.id, 
-                              status: 'cancelled' 
+                            onClick={() => updateStatus.mutate({
+                              orderId: order.id,
+                              status: 'cancelled'
                             })}
                             className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
-                            title="Cancel"
+                            title={t('common.cancel')}
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -170,35 +171,35 @@ export default function Orders() {
                       )}
                       {order.status === 'confirmed' && (
                         <button
-                          onClick={() => updateStatus.mutate({ 
-                            orderId: order.id, 
-                            status: 'preparing' 
+                          onClick={() => updateStatus.mutate({
+                            orderId: order.id,
+                            status: 'preparing'
                           })}
                           className="btn-secondary py-1.5 px-3 text-xs"
                         >
-                          Start Preparing
+                          {t('orders.startPreparing')}
                         </button>
                       )}
                       {order.status === 'preparing' && (
                         <button
-                          onClick={() => updateStatus.mutate({ 
-                            orderId: order.id, 
-                            status: 'ready' 
+                          onClick={() => updateStatus.mutate({
+                            orderId: order.id,
+                            status: 'ready'
                           })}
                           className="btn-secondary py-1.5 px-3 text-xs"
                         >
-                          Mark Ready
+                          {t('orders.markReady')}
                         </button>
                       )}
                       {order.status === 'ready' && (
                         <button
-                          onClick={() => updateStatus.mutate({ 
-                            orderId: order.id, 
-                            status: 'completed' 
+                          onClick={() => updateStatus.mutate({
+                            orderId: order.id,
+                            status: 'completed'
                           })}
                           className="btn-primary py-1.5 px-3 text-xs"
                         >
-                          Complete
+                          {t('orders.complete')}
                         </button>
                       )}
                     </div>
@@ -209,12 +210,16 @@ export default function Orders() {
           </tbody>
         </table>
       </div>
-      
+
       {/* Pagination */}
       {data?.total > 20 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-neutral-500">
-            Showing {((page - 1) * 20) + 1} to {Math.min(page * 20, data.total)} of {data.total} orders
+            {t('common.showing', {
+              from: ((page - 1) * 20) + 1,
+              to: Math.min(page * 20, data.total),
+              total: data.total
+            })} {t('nav.orders').toLowerCase()}
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -222,17 +227,17 @@ export default function Orders() {
               disabled={page === 1}
               className="btn-secondary py-2 px-3"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
             </button>
             <span className="text-sm text-neutral-400">
-              Page {page} of {Math.ceil(data.total / 20)}
+              {t('common.page')} {page} {t('common.of')} {Math.ceil(data.total / 20)}
             </span>
             <button
               onClick={() => setPage(p => p + 1)}
               disabled={page >= Math.ceil(data.total / 20)}
               className="btn-secondary py-2 px-3"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4 rtl:rotate-180" />
             </button>
           </div>
         </div>
@@ -240,4 +245,3 @@ export default function Orders() {
     </div>
   )
 }
-

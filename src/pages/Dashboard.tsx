@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/auth'
-import { callsApi, ordersApi, reservationsApi } from '../lib/api'
+import { callsApi, ordersApi } from '../lib/api'
 import { formatCurrency, formatDuration, formatDateTime } from '../lib/utils'
 import {
   PhoneCall,
   ShoppingBag,
-  Calendar,
   TrendingUp,
   ArrowUpRight,
   ArrowDownRight,
@@ -16,66 +16,67 @@ import {
 import { Link } from 'react-router-dom'
 
 export default function Dashboard() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const tenantId = user?.tenantId || ''
-  
+
   const { data: callStats } = useQuery({
     queryKey: ['callStats', tenantId],
     queryFn: () => callsApi.getStats(tenantId),
     enabled: !!tenantId,
   })
-  
+
   const { data: recentCalls } = useQuery({
     queryKey: ['recentCalls', tenantId],
     queryFn: () => callsApi.list(tenantId, { page: 1, page_size: 5 }),
     enabled: !!tenantId,
   })
-  
+
   const { data: recentOrders } = useQuery({
     queryKey: ['recentOrders', tenantId],
     queryFn: () => ordersApi.list(tenantId, { page: 1, page_size: 5 }),
     enabled: !!tenantId,
   })
-  
+
   const stats = [
     {
-      name: 'Total Calls',
+      name: t('dashboard.totalCalls'),
       value: callStats?.total_calls || 0,
       change: '+12%',
       changeType: 'increase',
       icon: PhoneCall,
     },
     {
-      name: 'Orders Today',
+      name: t('dashboard.ordersToday'),
       value: recentOrders?.total || 0,
       change: '+8%',
       changeType: 'increase',
       icon: ShoppingBag,
     },
     {
-      name: 'Avg Duration',
+      name: t('dashboard.avgDuration'),
       value: callStats?.avg_duration_seconds ? formatDuration(callStats.avg_duration_seconds) : '0:00',
       change: '-5%',
       changeType: 'decrease',
       icon: Clock,
     },
     {
-      name: 'Escalation Rate',
+      name: t('dashboard.escalationRate'),
       value: `${((callStats?.escalation_rate || 0) * 100).toFixed(1)}%`,
       change: '-2%',
       changeType: 'decrease',
       icon: TrendingUp,
     },
   ]
-  
+
   return (
     <div className="p-8 space-y-8 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-display font-bold text-white">Dashboard</h1>
-        <p className="text-neutral-400 mt-1">Welcome back, {user?.fullName || 'there'}!</p>
+        <h1 className="text-2xl font-display font-bold text-white">{t('nav.dashboard')}</h1>
+        <p className="text-neutral-400 mt-1">{t('dashboard.welcome', { name: user?.fullName || t('common.user') })}</p>
       </div>
-      
+
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
@@ -102,18 +103,18 @@ export default function Dashboard() {
           </div>
         ))}
       </div>
-      
+
       {/* Recent activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Calls */}
         <div className="card">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-white">Recent Calls</h2>
+            <h2 className="text-lg font-semibold text-white">{t('dashboard.recentCalls')}</h2>
             <Link to="/calls" className="text-sm text-primary-500 hover:text-primary-400">
-              View all
+              {t('common.viewAll')}
             </Link>
           </div>
-          
+
           <div className="space-y-4">
             {recentCalls?.items?.slice(0, 5).map((call: any) => (
               <Link
@@ -144,7 +145,7 @@ export default function Dashboard() {
                     {formatDateTime(call.started_at)}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="text-end">
                   <p className="text-sm text-neutral-300">
                     {call.duration_seconds ? formatDuration(call.duration_seconds) : '--'}
                   </p>
@@ -154,22 +155,22 @@ export default function Dashboard() {
                 </div>
               </Link>
             ))}
-            
+
             {(!recentCalls?.items || recentCalls.items.length === 0) && (
-              <p className="text-center text-neutral-500 py-8">No calls yet</p>
+              <p className="text-center text-neutral-500 py-8">{t('calls.noCalls')}</p>
             )}
           </div>
         </div>
-        
+
         {/* Recent Orders */}
         <div className="card">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-white">Recent Orders</h2>
+            <h2 className="text-lg font-semibold text-white">{t('dashboard.recentOrders')}</h2>
             <Link to="/orders" className="text-sm text-primary-500 hover:text-primary-400">
-              View all
+              {t('common.viewAll')}
             </Link>
           </div>
-          
+
           <div className="space-y-4">
             {recentOrders?.items?.slice(0, 5).map((order: any) => (
               <div
@@ -184,10 +185,10 @@ export default function Dashboard() {
                     {order.customer_name}
                   </p>
                   <p className="text-xs text-neutral-500">
-                    {order.items?.length || 0} items
+                    {order.items?.length || 0} {t('orders.items')}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="text-end">
                   <p className="text-sm font-medium text-white">
                     {formatCurrency(order.total_cents)}
                   </p>
@@ -201,17 +202,17 @@ export default function Dashboard() {
                 </div>
               </div>
             ))}
-            
+
             {(!recentOrders?.items || recentOrders.items.length === 0) && (
-              <p className="text-center text-neutral-500 py-8">No orders yet</p>
+              <p className="text-center text-neutral-500 py-8">{t('orders.noOrders')}</p>
             )}
           </div>
         </div>
       </div>
-      
+
       {/* Quick stats */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-white mb-6">Call Outcomes</h2>
+        <h2 className="text-lg font-semibold text-white mb-6">{t('dashboard.callOutcomes')}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {Object.entries(callStats?.outcomes || {}).map(([outcome, count]) => (
             <div key={outcome} className="text-center p-4 bg-neutral-800/50 rounded-lg">
@@ -224,4 +225,3 @@ export default function Dashboard() {
     </div>
   )
 }
-

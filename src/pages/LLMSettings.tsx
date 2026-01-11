@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/auth'
+import { useLanguageStore } from '../stores/language'
 import { tenantsApi } from '../lib/api'
 import {
   Brain,
@@ -43,23 +45,25 @@ const MODELS: Record<string, { id: string; name: string }[]> = {
 }
 
 export default function LLMSettings() {
+  const { t } = useTranslation()
+  const { direction } = useLanguageStore()
   const { user } = useAuthStore()
   const tenantId = user?.tenantId || ''
   const queryClient = useQueryClient()
-  
+
   const { data: config, isLoading } = useQuery({
     queryKey: ['llmConfig', tenantId],
     queryFn: () => tenantsApi.getLLMConfig(tenantId),
     enabled: !!tenantId,
   })
-  
+
   const [formData, setFormData] = useState({
     llm_provider: 'openai',
     llm_model: 'gpt-4-turbo',
     fallback_llm_provider: 'anthropic',
     fallback_llm_model: 'claude-3-sonnet-20240229',
   })
-  
+
   useEffect(() => {
     if (config) {
       setFormData({
@@ -70,23 +74,23 @@ export default function LLMSettings() {
       })
     }
   }, [config])
-  
+
   const updateConfig = useMutation({
     mutationFn: (data: any) => tenantsApi.updateLLMConfig(tenantId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['llmConfig', tenantId] })
-      toast.success('AI settings saved')
+      toast.success(t('llmSettings.saved'))
     },
     onError: () => {
-      toast.error('Failed to save settings')
+      toast.error(t('llmSettings.saveFailed'))
     },
   })
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     updateConfig.mutate(formData)
   }
-  
+
   if (isLoading) {
     return (
       <div className="p-8 flex items-center justify-center">
@@ -94,15 +98,15 @@ export default function LLMSettings() {
       </div>
     )
   }
-  
+
   return (
-    <div className="p-8 space-y-8 animate-fade-in">
+    <div dir={direction} className="p-8 space-y-8 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-display font-bold text-white">AI Settings</h1>
-        <p className="text-neutral-400 mt-1">Configure your AI provider and model</p>
+        <h1 className="text-2xl font-display font-bold text-white">{t('llmSettings.title')}</h1>
+        <p className="text-neutral-400 mt-1">{t('llmSettings.subtitle')}</p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Primary Provider */}
         <div className="card">
@@ -111,11 +115,11 @@ export default function LLMSettings() {
               <Zap className="w-5 h-5 text-primary-500" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Primary AI Provider</h2>
-              <p className="text-sm text-neutral-400">Main AI model for handling calls</p>
+              <h2 className="text-lg font-semibold text-white">{t('llmSettings.primary.title')}</h2>
+              <p className="text-sm text-neutral-400">{t('llmSettings.primary.description')}</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {PROVIDERS.map((provider) => (
               <button
@@ -128,7 +132,7 @@ export default function LLMSettings() {
                     llm_model: MODELS[provider.id][0].id,
                   })
                 }}
-                className={`p-4 rounded-lg border text-left transition-colors ${
+                className={`p-4 rounded-lg border text-start transition-colors ${
                   formData.llm_provider === provider.id
                     ? 'border-primary-500 bg-primary-500/10'
                     : 'border-neutral-700 hover:border-neutral-600'
@@ -144,10 +148,10 @@ export default function LLMSettings() {
               </button>
             ))}
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-2">
-              Model
+              {t('llmSettings.model.label')}
             </label>
             <select
               value={formData.llm_model}
@@ -160,7 +164,7 @@ export default function LLMSettings() {
             </select>
           </div>
         </div>
-        
+
         {/* Fallback Provider */}
         <div className="card">
           <div className="flex items-center gap-3 mb-6">
@@ -168,11 +172,11 @@ export default function LLMSettings() {
               <Shield className="w-5 h-5 text-primary-500" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Fallback AI Provider</h2>
-              <p className="text-sm text-neutral-400">Used if primary provider fails</p>
+              <h2 className="text-lg font-semibold text-white">{t('llmSettings.fallback.title')}</h2>
+              <p className="text-sm text-neutral-400">{t('llmSettings.fallback.description')}</p>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {PROVIDERS.filter(p => p.id !== formData.llm_provider).map((provider) => (
               <button
@@ -185,7 +189,7 @@ export default function LLMSettings() {
                     fallback_llm_model: MODELS[provider.id][0].id,
                   })
                 }}
-                className={`p-4 rounded-lg border text-left transition-colors ${
+                className={`p-4 rounded-lg border text-start transition-colors ${
                   formData.fallback_llm_provider === provider.id
                     ? 'border-primary-500 bg-primary-500/10'
                     : 'border-neutral-700 hover:border-neutral-600'
@@ -201,10 +205,10 @@ export default function LLMSettings() {
               </button>
             ))}
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-2">
-              Fallback Model
+              {t('llmSettings.fallback.model')}
             </label>
             <select
               value={formData.fallback_llm_model}
@@ -217,23 +221,20 @@ export default function LLMSettings() {
             </select>
           </div>
         </div>
-        
+
         {/* Info */}
         <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
           <div className="flex items-start gap-3">
             <Brain className="w-5 h-5 text-blue-400 mt-0.5" />
             <div>
-              <p className="font-medium text-blue-400">How it works</p>
+              <p className="font-medium text-blue-400">{t('llmSettings.info.title')}</p>
               <p className="text-sm text-blue-300/70 mt-1">
-                Your AI receptionist will use the primary provider for all calls. 
-                If the primary provider is unavailable or returns an error, 
-                the system automatically switches to the fallback provider to ensure 
-                uninterrupted service.
+                {t('llmSettings.info.description')}
               </p>
             </div>
           </div>
         </div>
-        
+
         {/* Save Button */}
         <div className="flex justify-end">
           <button
@@ -246,11 +247,10 @@ export default function LLMSettings() {
             ) : (
               <Save className="w-4 h-4" />
             )}
-            Save AI Settings
+            {t('llmSettings.save')}
           </button>
         </div>
       </form>
     </div>
   )
 }
-

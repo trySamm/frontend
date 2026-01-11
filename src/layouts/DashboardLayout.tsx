@@ -1,6 +1,9 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/auth'
+import { useLanguageStore } from '../stores/language'
 import { cn } from '../lib/utils'
+import LanguageSwitcher from '../components/LanguageSwitcher'
 import {
   Phone,
   LayoutDashboard,
@@ -17,32 +20,34 @@ import {
 import { useState } from 'react'
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Calls', href: '/calls', icon: PhoneCall },
-  { name: 'Orders', href: '/orders', icon: ShoppingBag },
-  { name: 'Reservations', href: '/reservations', icon: Calendar },
-  { name: 'Menu', href: '/menu', icon: UtensilsCrossed },
+  { name: 'nav.dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'nav.calls', href: '/calls', icon: PhoneCall },
+  { name: 'nav.orders', href: '/orders', icon: ShoppingBag },
+  { name: 'nav.reservations', href: '/reservations', icon: Calendar },
+  { name: 'nav.menu', href: '/menu', icon: UtensilsCrossed },
 ]
 
 const settingsNavigation = [
-  { name: 'General', href: '/settings', icon: Settings },
-  { name: 'AI Settings', href: '/settings/llm', icon: Brain },
+  { name: 'nav.settings', href: '/settings', icon: Settings },
+  { name: 'nav.aiSettings', href: '/settings/llm', icon: Brain },
 ]
 
 export default function DashboardLayout() {
+  const { t } = useTranslation()
   const { user, logout } = useAuthStore()
+  const { direction, isRTL } = useLanguageStore()
   const navigate = useNavigate()
   const [settingsOpen, setSettingsOpen] = useState(false)
-  
+
   const handleLogout = () => {
     logout()
     navigate('/login')
   }
-  
+
   return (
-    <div className="min-h-screen bg-neutral-925 flex">
+    <div dir={direction} className="min-h-screen bg-neutral-925 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-neutral-900/50 border-r border-neutral-800 flex flex-col">
+      <aside className="w-64 bg-neutral-900/50 border-e border-neutral-800 flex flex-col">
         {/* Logo */}
         <div className="h-16 flex items-center px-6 border-b border-neutral-800">
           <div className="flex items-center gap-3">
@@ -52,7 +57,7 @@ export default function DashboardLayout() {
             <span className="text-lg font-display font-semibold text-white">Loman AI</span>
           </div>
         </div>
-        
+
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
           {navigation.map((item) => (
@@ -69,10 +74,10 @@ export default function DashboardLayout() {
               }
             >
               <item.icon className="w-5 h-5" />
-              {item.name}
+              {t(item.name)}
             </NavLink>
           ))}
-          
+
           {/* Settings dropdown */}
           <div className="pt-4">
             <button
@@ -81,13 +86,17 @@ export default function DashboardLayout() {
             >
               <div className="flex items-center gap-3">
                 <Settings className="w-5 h-5" />
-                Settings
+                {t('nav.settings')}
               </div>
-              <ChevronDown className={cn('w-4 h-4 transition-transform', settingsOpen && 'rotate-180')} />
+              <ChevronDown className={cn(
+                'w-4 h-4 transition-transform',
+                settingsOpen && 'rotate-180',
+                isRTL() && !settingsOpen && '-scale-x-100'
+              )} />
             </button>
-            
+
             {settingsOpen && (
-              <div className="mt-1 ml-4 space-y-1">
+              <div className="mt-1 ms-4 space-y-1">
                 {settingsNavigation.map((item) => (
                   <NavLink
                     key={item.name}
@@ -102,13 +111,13 @@ export default function DashboardLayout() {
                     }
                   >
                     <item.icon className="w-4 h-4" />
-                    {item.name}
+                    {t(item.name)}
                   </NavLink>
                 ))}
               </div>
             )}
           </div>
-          
+
           {/* Super admin only */}
           {user?.role === 'super_admin' && (
             <NavLink
@@ -123,11 +132,16 @@ export default function DashboardLayout() {
               }
             >
               <Building2 className="w-5 h-5" />
-              Tenants
+              {t('nav.tenants')}
             </NavLink>
           )}
         </nav>
-        
+
+        {/* Language Switcher */}
+        <div className="px-4 py-2 border-t border-neutral-800">
+          <LanguageSwitcher />
+        </div>
+
         {/* User section */}
         <div className="p-4 border-t border-neutral-800">
           <div className="flex items-center justify-between">
@@ -149,14 +163,14 @@ export default function DashboardLayout() {
             <button
               onClick={handleLogout}
               className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
-              title="Logout"
+              title={t('common.logout')}
             >
               <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
       </aside>
-      
+
       {/* Main content */}
       <main className="flex-1 overflow-auto">
         <Outlet />
@@ -164,4 +178,3 @@ export default function DashboardLayout() {
     </div>
   )
 }
-

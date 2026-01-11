@@ -1,6 +1,18 @@
+/* Import Arabic font - must be at the top */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* RTL Support */
+[dir="rtl"] {
+  font-family: 'IBM Plex Sans Arabic', 'DM Sans', system-ui, sans-serif;
+}
+
+[dir="rtl"] .font-display {
+  font-family: 'IBM Plex Sans Arabic', 'Outfit', system-ui, sans-serif;
+}
 
 :root {
   --color-primary: #ef5343;
@@ -75,8 +87,13 @@ table {
 }
 
 th {
-  @apply text-left text-xs font-semibold text-neutral-400 uppercase tracking-wider 
+  @apply text-start text-xs font-semibold text-neutral-400 uppercase tracking-wider 
          px-6 py-3 bg-neutral-900/50 border-b border-neutral-800;
+}
+
+/* RTL-specific table alignment */
+[dir="rtl"] th {
+  text-align: right;
 }
 
 td {
@@ -129,5 +146,153 @@ tr:hover td {
 
 .pulse-glow {
   animation: pulse-glow 2s infinite;
+}
+
+/* ===========================================
+   RTL Support Utilities
+   =========================================== */
+
+/* Logical property utilities for RTL compatibility */
+.border-e {
+  border-inline-end-width: 1px;
+}
+
+.border-s {
+  border-inline-start-width: 1px;
+}
+
+.ms-auto {
+  margin-inline-start: auto;
+}
+
+.me-auto {
+  margin-inline-end: auto;
+}
+
+/* RTL-aware icon flipping */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* RTL-aware sidebar positioning */
+[dir="rtl"] .sidebar {
+  border-inline-end-width: 1px;
+  border-inline-start-width: 0;
+}
+
+/* RTL-aware text alignment */
+.text-start {
+  text-align: start;
+}
+
+.text-end {
+  text-align: end;
+}
+
+/* RTL-aware spacing */
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* Input with icon positioning for RTL */
+[dir="rtl"] .input-icon-start {
+  padding-inline-start: 2.75rem;
+  padding-inline-end: 1rem;
+}
+
+[dir="rtl"] .input-icon-start + .icon-position {
+  inset-inline-start: 0.75rem;
+  inset-inline-end: auto;
+}
+
+/* Dropdown and submenu positioning for RTL */
+[dir="rtl"] .submenu {
+  margin-inline-start: 1rem;
+  margin-inline-end: 0;
+}
+
+/* Chevron rotation for RTL */
+[dir="rtl"] .chevron-rotate {
+  transform: rotate(180deg);
+}
+
+[dir="rtl"] .chevron-rotate.open {
+  transform: rotate(0deg);
+}
+
+/* Card and container directional adjustments */
+[dir="rtl"] .card-content {
+  text-align: right;
+}
+
+/* Navigation items alignment */
+[dir="rtl"] .nav-item {
+  flex-direction: row-reverse;
+}
+
+/* Search input RTL */
+[dir="rtl"] input[type="search"],
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="password"],
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+/* Select dropdown RTL */
+[dir="rtl"] select {
+  text-align: right;
+  padding-inline-end: 2.5rem;
+  padding-inline-start: 1rem;
+  background-position: left 0.5rem center;
+}
+
+/* Table cell alignment for RTL */
+[dir="rtl"] td {
+  text-align: right;
+}
+
+/* Flex gap reversing for RTL */
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .flex-row-normal {
+  flex-direction: row;
+}
+
+/* Dialog and modal RTL */
+[dir="rtl"] .modal-close {
+  inset-inline-end: 1rem;
+  inset-inline-start: auto;
+}
+
+/* Notification positioning */
+[dir="rtl"] .notification {
+  inset-inline-end: 1rem;
+  inset-inline-start: auto;
+}
+
+/* Progress bar direction */
+[dir="rtl"] .progress-bar {
+  direction: rtl;
+}
+
+/* Breadcrumb separator */
+[dir="rtl"] .breadcrumb-separator {
+  transform: scaleX(-1);
+}
+
+/* Language switcher styles */
+.language-switcher {
+  @apply relative inline-flex items-center;
+}
+
+.language-option {
+  @apply flex items-center gap-2 px-3 py-2 text-sm hover:bg-neutral-800 cursor-pointer transition-colors;
+}
+
+.language-option.active {
+  @apply bg-primary-600/10 text-primary-500;
 }
 

@@ -4,6 +4,8 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  // Enable RTL support
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -26,8 +28,9 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
-        display: ['Outfit', 'system-ui', 'sans-serif'],
+        sans: ['DM Sans', 'IBM Plex Sans Arabic', 'system-ui', 'sans-serif'],
+        display: ['Outfit', 'IBM Plex Sans Arabic', 'system-ui', 'sans-serif'],
+        arabic: ['IBM Plex Sans Arabic', 'Noto Sans Arabic', 'system-ui', 'sans-serif'],
       },
     },
   },
