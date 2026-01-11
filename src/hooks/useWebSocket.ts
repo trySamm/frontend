@@ -61,8 +61,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}): UseWebSocketRet
 
   const queryClient = useQueryClient()
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
-  const user = useAuthStore((state) => state.user)
-  const tenantId = user?.tenantId
+  const getEffectiveTenantId = useAuthStore((state) => state.getEffectiveTenantId)
+  const tenantId = getEffectiveTenantId()
 
   // Subscribe to WebSocket state using useSyncExternalStore for proper React integration
   const state = useSyncExternalStore(

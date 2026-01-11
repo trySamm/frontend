@@ -47,8 +47,8 @@ const MODELS: Record<string, { id: string; name: string }[]> = {
 export default function LLMSettings() {
   const { t } = useTranslation()
   const { direction } = useLanguageStore()
-  const { user } = useAuthStore()
-  const tenantId = user?.tenantId || ''
+  const { getEffectiveTenantId } = useAuthStore()
+  const tenantId = getEffectiveTenantId() || ''
   const queryClient = useQueryClient()
 
   const { data: config, isLoading } = useQuery({

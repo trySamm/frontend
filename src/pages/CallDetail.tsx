@@ -21,8 +21,8 @@ export default function CallDetail() {
   const { t } = useTranslation()
   const { direction } = useLanguageStore()
   const { callId } = useParams()
-  const { user } = useAuthStore()
-  const tenantId = user?.tenantId || ''
+  const { getEffectiveTenantId } = useAuthStore()
+  const tenantId = getEffectiveTenantId() || ''
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 

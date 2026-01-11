@@ -17,8 +17,8 @@ const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'
 
 export default function Settings() {
   const { t } = useTranslation()
-  const { user } = useAuthStore()
-  const tenantId = user?.tenantId || ''
+  const { getEffectiveTenantId } = useAuthStore()
+  const tenantId = getEffectiveTenantId() || ''
   const queryClient = useQueryClient()
 
   const { data: settings, isLoading } = useQuery({
