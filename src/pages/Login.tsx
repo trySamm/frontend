@@ -65,7 +65,7 @@ export default function Login() {
         <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
           <Phone className="w-5 h-5 text-white" />
         </div>
-        <span className="text-xl font-display font-semibold text-white">Loman AI</span>
+        <span className="text-xl font-display font-semibold text-white">Samm AI</span>
       </div>
 
       <div className="text-center lg:text-start">

@@ -54,7 +54,7 @@ export default function DashboardLayout() {
             <div className="w-9 h-9 bg-primary-600 rounded-lg flex items-center justify-center">
               <Phone className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-display font-semibold text-white">Loman AI</span>
+            <span className="text-lg font-display font-semibold text-white">Samm AI</span>
           </div>
         </div>
 

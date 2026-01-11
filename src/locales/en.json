@@ -345,7 +345,7 @@
     }
   },
   "login": {
-    "title": "Welcome to Loman AI",
+    "title": "Welcome to Samm AI",
     "subtitle": "AI-powered phone answering for restaurants",
     "email": "Email",
     "emailPlaceholder": "Enter your email",
@@ -357,12 +357,12 @@
     "demoCredentials": "Demo credentials:"
   },
   "auth": {
-    "brandName": "Loman AI",
+    "brandName": "Samm AI",
     "tagline": "Your 24/7 AI Phone Assistant",
     "description": "Never miss a call again. Let AI handle orders, reservations, and FAQs while you focus on running your restaurant.",
     "alwaysAvailable": "Always Available",
     "callCoverage": "Call Coverage",
-    "copyright": "© 2024 Loman AI. All rights reserved."
+    "copyright": "© 2024 Samm AI. All rights reserved."
   },
   "errors": {
     "generic": "Something went wrong",
