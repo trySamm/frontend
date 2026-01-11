@@ -18,12 +18,17 @@ import LLMSettings from './pages/LLMSettings'
 import Tenants from './pages/Tenants'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore()
-  
+  const { isAuthenticated, _hasHydrated } = useAuthStore()
+
+  // Wait for Zustand to hydrate from localStorage before checking auth
+  if (!_hasHydrated) {
+    return null
+  }
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
   }
-  
+
   return <>{children}</>
 }
 
